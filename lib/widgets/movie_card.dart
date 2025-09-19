@@ -36,7 +36,7 @@ class MoviePosterCard extends StatelessWidget {
         ),
       ),
     );
-  }
+  } //runa
 
   void _showMovieDetailsDialog(BuildContext context, Movie movie) {
     showDialog(

@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart'; // <-- Pastikan import ini ada
+import 'package:google_fonts/google_fonts.dart';
 import 'home_screen.dart';
 import '../utils/app_theme.dart';
 
@@ -8,7 +8,7 @@ class SplashScreen extends StatefulWidget {
   final String userEmail;
 
   const SplashScreen({super.key, required this.userEmail});
-
+//runa pernah mencet line ini
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
@@ -54,7 +54,6 @@ class _SplashScreenState extends State<SplashScreen>
           opacity: _animation,
           child: ScaleTransition(
             scale: _animation,
-            // Widget dibungkus Column untuk menambahkan teks di bawah logo
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -63,7 +62,6 @@ class _SplashScreenState extends State<SplashScreen>
                   width: 150,
                 ),
                 const SizedBox(height: 24),
-                // --- Teks Nama Aplikasi ---
                 Text(
                   'Cinema Noir',
                   style: GoogleFonts.poppins(
@@ -74,7 +72,6 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
                 ),
                 const SizedBox(height: 8),
-                // --- Teks Nama Pembuat ---
                 Text(
                   'Dibuat oleh [Sattya Runa Pramudita]',
                   style: GoogleFonts.lato(

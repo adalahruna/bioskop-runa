@@ -24,7 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _widgetOptions = <Widget>[
       MovieListPage(userEmail: widget.userEmail),
       const Center(
-        child: Text('Halaman Tiket Saya',
+        child: Text('Halaman Tiket Saya', //masih belum kelar
             style: TextStyle(color: AppTheme.offWhite, fontSize: 24)),
       ),
       ProfileScreen(userEmail: widget.userEmail),

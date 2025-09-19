@@ -3,27 +3,25 @@ import 'movie_model.dart';
 class NowShowingMovies {
   static const List<Movie> list = [
     const Movie(
-      title: 'Movie Title 1',
+      title: 'Jojo Bizzare Adventure',
       posterPath: 'assets/images/sbrtyg.jpg',
       genre: 'Action',
-      rating: 8.5,
-      description: 'Jojo peak',
+      rating: 9.5,
+      description: 'Jojo peak', //memang anime bagus
     ),
     const Movie(
       title: 'Movie Title 2',
-      posterPath: 'assets/images/poster_2.jpg',
+      posterPath: 'assets/masihnyariposter.jpg',
       genre: 'Comedy',
       rating: 7.8,
-      description:
-          'Kisah lucu seorang detektif yang harus memecahkan kasus paling aneh dalam hidupnya. Siap-siap tertawa terbahak-bahak!',
+      description: 'gatau deh',
     ),
     const Movie(
       title: 'Movie Title 3',
-      posterPath: 'assets/images/poster_3.jpg',
+      posterPath: 'assets/images/masihnyariposter.jpg',
       genre: 'Horror',
       rating: 8.0,
-      description:
-          'Film horor psikologis yang akan menghantui pikiran Anda lama setelah menonton. Jangan nonton sendirian!',
+      description: 'gatau deh',
     ),
   ];
 }

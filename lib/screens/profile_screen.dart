@@ -44,7 +44,7 @@ class ProfileScreen extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                userEmail,
+                userEmail, //ada runa juga
                 style: GoogleFonts.poppins(
                   color: AppTheme.offWhite,
                   fontSize: 20,
