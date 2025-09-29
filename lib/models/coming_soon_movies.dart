@@ -4,24 +4,19 @@ class ComingSoonMovies {
   static const List<Movie> list = [
     const Movie(
       title: 'Upcoming 1',
-      posterPath: 'assets/images/sbrtygg.jpg',
+      posterPath: 'assets/images/upcoming_1.jpg',
+      backdropPath: 'assets/images/upcoming_1.jpg',
       genre: 'Sci-Fi',
-      rating: 0, //runana
-      description: 'masih belum tau, ini iseng aja masukin poster',
+      rating: 0,
+      description: 'Deskripsi film akan datang 1.',
     ),
     const Movie(
       title: 'Upcoming 2',
-      posterPath: 'assets/images/yahahahayuk.jpg',
+      posterPath: 'assets/images/upcoming_2.jpg',
+      backdropPath: 'assets/images/upcoming_2.jpg',
       genre: 'Animation',
       rating: 0,
-      description: 'ntah lah.',
-    ),
-    const Movie(
-      title: 'Upcoming 3',
-      posterPath: 'assets/images/upcoming_3.jpg',
-      genre: 'Thriller',
-      rating: 0,
-      description: 'humu humu',
+      description: 'Deskripsi film akan datang 2.',
     ),
   ];
 }

@@ -3,8 +3,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'profile_screen.dart';
 import '../widgets/movie_card.dart';
 import '../utils/app_theme.dart';
-import '../models/now_showing_movies.dart';
+import '../models/movie_model.dart';
 import '../models/coming_soon_movies.dart';
+import '../services/api_services.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.userEmail});
@@ -22,9 +23,9 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _widgetOptions = <Widget>[
-      MovieListPage(userEmail: widget.userEmail),
+      const MovieListPage(), // <-- Kita ubah ini
       const Center(
-        child: Text('Halaman Tiket Saya', //masih belum kelar
+        child: Text('Halaman Tiket Saya',
             style: TextStyle(color: AppTheme.offWhite, fontSize: 24)),
       ),
       ProfileScreen(userEmail: widget.userEmail),
@@ -82,111 +83,94 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class MovieListPage extends StatelessWidget {
-  const MovieListPage({super.key, required this.userEmail});
-  final String userEmail;
+class MovieListPage extends StatefulWidget {
+  const MovieListPage({super.key});
+
+  @override
+  State<MovieListPage> createState() => _MovieListPageState();
+}
+
+class _MovieListPageState extends State<MovieListPage> {
+  final ApiService _apiService = ApiService();
+  late Future<List<Movie>> _nowShowingMovies;
+  late Future<List<Movie>> _comingSoonMovies;
+
+  @override
+  void initState() {
+    super.initState();
+    _nowShowingMovies = _apiService.getNowShowingMovies();
+    _comingSoonMovies = _apiService.getComingSoonMovies();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final String userName = userEmail.split('@').first.isEmpty
-        ? 'User'
-        : userEmail.split('@').first;
-    final String capitalizedUserName = userName.isNotEmpty
-        ? userName[0].toUpperCase() + userName.substring(1)
-        : "User";
-    final List<String> genres = [
-      'Action',
-      'Comedy',
-      'Horror',
-      'Sci-Fi',
-      'Romance',
-      'Thriller',
-      'Animation'
-    ];
-
     return ListView(
       padding: EdgeInsets.zero,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(
-              top: 16.0, bottom: 20.0, left: 24.0, right: 24.0),
-          child: Text(
-            'Selamat datang, $capitalizedUserName',
-            style: GoogleFonts.lato(color: AppTheme.lightGrey, fontSize: 16),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: SizedBox(
-            height: 36,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              clipBehavior: Clip.none,
-              itemCount: genres.length,
-              itemBuilder: (context, index) {
-                return Container(
-                  margin: const EdgeInsets.only(right: 12),
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  decoration: BoxDecoration(
-                      color: AppTheme.darkSlate,
-                      borderRadius: BorderRadius.circular(20)),
-                  alignment: Alignment.center,
-                  child: Text(
-                    genres[index],
-                    style: GoogleFonts.poppins(
-                        color: AppTheme.offWhite,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500),
-                  ),
-                );
-              },
-            ),
-          ),
-        ),
-        _buildSectionTitle('Sedang Tayang'),
-        SizedBox(
-          height: 400,
-          child: PageView.builder(
-            controller:
-                PageController(viewportFraction: 0.75, initialPage: 5000),
-            itemCount: 10000,
-            itemBuilder: (context, index) {
-              final int realIndex = index % NowShowingMovies.list.length;
-              return MoviePosterCard(
-                movie: NowShowingMovies.list[realIndex],
-                isFeatured: true,
-              );
-            },
-          ),
-        ),
-        _buildSectionTitle('Akan Datang'),
-        SizedBox(
-          height: 250,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            itemCount: ComingSoonMovies.list.length,
-            itemBuilder: (context, index) {
-              return MoviePosterCard(movie: ComingSoonMovies.list[index]);
-            },
-          ),
-        ),
+        _buildMoviesSection('Sedang Tayang', _nowShowingMovies,
+            isPageView: true),
+        _buildMoviesSection('Akan Datang', _comingSoonMovies,
+            isPageView: false),
         const SizedBox(height: 20),
       ],
     );
   }
 
-  Widget _buildSectionTitle(String title) {
-    return Padding(
-      padding: const EdgeInsets.only(
-          top: 30.0, bottom: 20.0, left: 24.0, right: 24.0),
-      child: Text(
-        title,
-        style: GoogleFonts.poppins(
-            color: AppTheme.offWhite,
-            fontSize: 22,
-            fontWeight: FontWeight.w600),
-      ),
+  Widget _buildMoviesSection(String title, Future<List<Movie>> futureMovies,
+      {required bool isPageView}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(
+              top: 30.0, bottom: 20.0, left: 24.0, right: 24.0),
+          child: Text(
+            title,
+            style: GoogleFonts.poppins(
+                color: AppTheme.offWhite,
+                fontSize: 22,
+                fontWeight: FontWeight.w600),
+          ),
+        ),
+        SizedBox(
+          height: isPageView ? 400 : 250,
+          child: FutureBuilder<List<Movie>>(
+            future: futureMovies,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(
+                    child: Text('Error: ${snapshot.error}',
+                        style: const TextStyle(color: Colors.white)));
+              } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                final movies = snapshot.data!;
+                return isPageView
+                    ? PageView.builder(
+                        controller: PageController(viewportFraction: 0.75),
+                        itemCount: movies.length,
+                        itemBuilder: (context, index) {
+                          return MoviePosterCard(
+                              movie: movies[index], isFeatured: true);
+                        },
+                      )
+                    : ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        itemCount: movies.length,
+                        itemBuilder: (context, index) {
+                          return MoviePosterCard(movie: movies[index]);
+                        },
+                      );
+              } else {
+                return const Center(
+                    child: Text('Tidak ada film ditemukan',
+                        style: TextStyle(color: Colors.white)));
+              }
+            },
+          ),
+        ),
+      ],
     );
   }
 }

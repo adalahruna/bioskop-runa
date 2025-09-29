@@ -24,9 +24,13 @@ class MoviePosterCard extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 8),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(16),
-          child: Image.asset(
+          child: Image.network(
             movie.posterPath,
             fit: BoxFit.cover,
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) return child;
+              return const Center(child: CircularProgressIndicator());
+            },
             errorBuilder: (context, error, stackTrace) {
               return const Center(
                   child: Icon(Icons.image_not_supported,
@@ -36,7 +40,7 @@ class MoviePosterCard extends StatelessWidget {
         ),
       ),
     );
-  } //runa
+  }
 
   void _showMovieDetailsDialog(BuildContext context, Movie movie) {
     showDialog(
@@ -54,10 +58,10 @@ class MoviePosterCard extends StatelessWidget {
                 ClipRRect(
                   borderRadius:
                       const BorderRadius.vertical(top: Radius.circular(20)),
-                  child: Image.asset(
-                    movie.posterPath,
+                  child: Image.network(
+                    movie.backdropPath,
                     fit: BoxFit.cover,
-                    height: 300,
+                    height: 200,
                     width: double.infinity,
                   ),
                 ),
@@ -77,17 +81,12 @@ class MoviePosterCard extends StatelessWidget {
                       const SizedBox(height: 8),
                       Row(
                         children: [
-                          Text(
-                            movie.genre,
-                            style: GoogleFonts.lato(
-                                color: AppTheme.lightGrey, fontSize: 16),
-                          ),
                           if (movie.rating > 0) ...[
-                            const SizedBox(width: 10),
                             const Icon(Icons.star,
                                 color: AppTheme.mutedGold, size: 18),
+                            const SizedBox(width: 4),
                             Text(
-                              '${movie.rating}',
+                              '${movie.rating.toStringAsFixed(1)}',
                               style: GoogleFonts.lato(
                                   color: AppTheme.mutedGold, fontSize: 16),
                             ),
@@ -105,15 +104,6 @@ class MoviePosterCard extends StatelessWidget {
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.of(context).pop();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                    'Membeli tiket untuk ${movie.title}! (Fitur belum diimplementasikan)',
-                                    style: GoogleFonts.lato(
-                                        color: AppTheme.darkCharcoal)),
-                                backgroundColor: AppTheme.mutedGold,
-                              ),
-                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppTheme.mutedGold,

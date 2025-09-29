@@ -1,0 +1,29 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Chrome (No CORS) - Debug",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug", // Mode debug (default)
+            "args": [
+                "-d",
+                "chrome",
+                "--web-browser-flag",
+                "--disable-web-security"
+            ]
+        },
+        {
+            "name": "Chrome (No CORS) - Profile",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile", // <-- Menjalankan dalam mode Profile
+            "args": [
+                "-d",
+                "chrome",
+                "--web-browser-flag",
+                "--disable-web-security"
+            ]
+        }
+    ]
+}
